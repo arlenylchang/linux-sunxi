@@ -44,9 +44,15 @@ static int gmac_system_init(struct gmac_priv *priv)
 
 #ifndef CONFIG_GMAC_SCRIPT_SYS
 	if(priv->gpiobase){
+#ifdef CONFIG_GMAC_RGMII
 		writel(0x55555555, priv->gpiobase + PA_CFG0);
 		writel(0x50555505, priv->gpiobase + PA_CFG1);
 		writel(0x00000005, priv->gpiobase + PA_CFG2);
+#else
+		writel(0x55555555, priv->gpiobase + PA_CFG0);
+		writel(0x55555555, priv->gpiobase + PA_CFG1);
+		writel(0x00000015, priv->gpiobase + PA_CFG2);
+#endif
 	}
 #else
 	priv->gpio_handle = gpio_request_ex("gmac_para", NULL);
@@ -372,7 +378,13 @@ static struct gmac_mdio_bus_data gmac_mdio_data = {
 static struct gmac_plat_data gmac_platdata ={
 	.bus_id = 0,
 	.phy_addr = -1,
+#if defined(CONFIG_GMAC_RGMII)
 	.phy_interface = PHY_INTERFACE_MODE_RGMII,
+#elif defined(CONFIG_GMAC_GMII)
+	.phy_interface = PHY_INTERFACE_MODE_GMII,
+#else
+	.phy_interface = PHY_INTERFACE_MODE_MII,
+#endif
 	.clk_csr = 2,
 
 	.tx_coe = 1,

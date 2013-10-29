@@ -44,5 +44,25 @@ config GMAC_CHAINED
 
 endchoice
 
+choice
+	prompt "Select PHY interface mode"
+	depends on SUNXI_GMAC
+	---help---
+	  This driver supports MII, GMII and RGMII PHYs. Older A20 boards
+	  typically have MII (10/100) PHYs. Newer boards like Cubietruck
+	  have RGMII (10/100/1000) PHYs.
+
+config GMAC_MII
+	bool "Enable MII PHY Mode"
+
+config GMAC_RGMII
+	bool "Enable RGMII PHY Mode"
+
+config GMAC_GMII
+	bool "Enable GMII PHY Mode"
+
+endchoice
+
+
 endif
 
